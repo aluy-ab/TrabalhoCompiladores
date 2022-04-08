@@ -1,0 +1,6 @@
+Regras Sintáticas (rascunho)
+
+X -> "main" "{" Comandos Return "}"
+Comandos -> Condicao | Loop |
+Condicao -> "if" "(" Operacao ")" "{" Comandos "}" Contradicao
+Contradicao -> "else" "(" Operacao ")" "{" Comandos "}" | True 
