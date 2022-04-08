@@ -67,7 +67,7 @@ TOKEN : //operadores
 |    <MENOR: "<">
 |    <MAIORIGUAL: ">=">
 |    <MENORIGUAL: "<=">
-|    <NEGACAO: "!=">
+|    <DIFERENTE: "!=">
 |    <AND: "&&">
 |    <OR: "||">
 |    <NOT: "!">
@@ -82,7 +82,7 @@ TOKEN :
 void X() :
 {Token t;}
 {
-    Function()<APARENTESES>Variavel()<FPARENTESES><ACHAVES>Comandos()<FCHAVES>
+    Variavel() <APARENTESES> Variavel() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES>
     (
         <APARENTESES> { System.out.println("Abre parenteses: (");}
     |    <FPARENTESES> { System.out.println("Fecha parenteses: )");}
@@ -111,7 +111,7 @@ void X() :
     |    <MENOR> { System.out.println("Operador: <");}
     |    <MAIORIGUAL> { System.out.println("Operador: >=");}
     |    <MENORIGUAL> { System.out.println("Operador: <=");}
-    |    <NEGACAO> { System.out.println("Operador: !=");}
+    |    <DIFERENTE> { System.out.println("Operador: !=");}
     |    <AND> { System.out.println("Operador: &&");}
     |    <OR> { System.out.println("Operador: ||");}
     |    <NOT> { System.out.println("Operador: !");}
@@ -131,7 +131,7 @@ void Comandos() :
 void ComandosEspecificos() :
 {}
 {
-    (Condicao() || Loop() || Operacao())?
+    (Condicao() | Loop() | Operacao())?
 }
 
 void Condicao() :
@@ -155,100 +155,26 @@ void Return() :
 void Expressao() :
 {}
 {
-    <NUM> || <ID>
+    <NUM> | <ID>
 }
 
 void Operacao() :
 {}
 {
-    Soma() || Subtracao() || Multiplicacao() || Divisao() ||
-    Igual() || Atribuir() || Maiorque() || Menorque() || Maiorigualque() ||
-    Menorigualque() || Negacao() || And() || Or() || Not() || Expressao() ||
-    Variavel()
+    Expressao() SinalOp() Expressao() | Variavel() | Not()
 }
 
-void Soma() :
+void SinalOp() :
 {}
 {
-    Operacao() <SOMA> Operacao()
-}
-
-void Subtracao() :
-{}
-{
-    Operacao() <SUBTRACAO> Operacao()
-}
-
-void Multiplicacao() :
-{}
-{
-    Operacao() <MULTIPLICACAO> Operacao()
-}
-
-void Divisao() :
-{}
-{
-    Operacao() <DIVISAO> Operacao()
-}
-
-void Igual() :
-{}
-{
-    Operacao() <IGUALDADE> Operacao()
-}
-
-void Atribuir() :
-{}
-{
-    Expressao() <ATRIBUICAO> Operacao()
-}
-
-void Maiorque() :
-{}
-{
-    Operacao() <MAIOR> Operacao()
-}
-
-void Menorque() :
-{}
-{
-    Operacao() <MENOR> Operacao()
-}
-
-void Maiorigualque() :
-{}
-{
-    Operacao() <MAIORIGUAL> Operacao()
-}
-
-void Menorigualque() :
-{}
-{
-    Operacao() <MENORIGUAL> Operacao()
-}
-
-void Negacao() :
-{}
-{
-    Operacao() <NEGACAO> Operacao()
-}
-
-void And() :
-{}
-{
-    Operacao() <AND> Operacao()
-}
-
-void Or() :
-{}
-{
-    Operacao() <OR> Operacao()
+    <SOMA> | <SUBTRACAO> | <MULTIPLICACAO> | <DIVISAO> | <IGUALDADE> | <ATRIBUICAO> | <MAIOR> |
+    <MENOR> | <MAIORIGUAL> | <MENORIGUAL> | <DIFERENTE> | <AND> | <OR> 
 }
 
 void Not() :
 {}
 {
-    Operacao() <NOT> Operacao()
+    <NOT> Expressao()
 }
 
 void Variaveis() :
@@ -266,14 +192,14 @@ void Variavel() :
 void TipoVariavel() :
 {}
 {
-    <INT> || <CHAR> || <VOID>
+    <INT> | <CHAR> | <VOID>
 
 }
 
 void Loop() :
 {}
 {
-    <WHILE> <APARENTESES> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> || <FOR> <APARENTESES>
+    <WHILE> <APARENTESES> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> | <FOR> <APARENTESES>
     Operacao() <PONTOVIRGULA> Operacao() <PONTOVIRGULA> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES>
 }
 
