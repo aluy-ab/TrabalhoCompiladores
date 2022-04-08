@@ -28,18 +28,19 @@ TOKEN :
 |    <ACHAVES: "{">
 |    <FCHAVES: "}">
 |    <PONTOVIRGULA: ";">
+|    <ATRIBUICAO: ":=">
 }
 
 TOKEN :
 {
     <NUM : (["0"-"9"])+> 
 |    <ID : ["a"-"z","A"-"Z"](["a"-"z","A"-"Z","0"-"9"])*>
-|    <COMENTARIO : \\\(["a"-"z","A"-"Z","0"-"9"])*>
 }
 
 void X() :
 {Token t;}
 {
+    <MAIN><ACHAVES> Comandos() <FCHAVES>
     (
         <MAIN> { System.out.println("Palavra reservada: main");}
     |    <ACHAVES> { System.out.println("Abre chaves: {");}
@@ -50,4 +51,10 @@ void X() :
     |    t = <COMENTARIO> { System.out.println("Comentário: " + t.image);}
     )*
     <EOF>
+}
+
+void Comandos() :
+{}
+{
+
 }
