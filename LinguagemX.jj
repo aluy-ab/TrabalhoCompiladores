@@ -122,142 +122,163 @@ void X() :
     <EOF>
 }
 
-void Comandos()
+void Comandos() :
+{}
 {
-    return Variavel() && ComandosEspecificos() && Return();
+    Variavel() ComandosEspecificos() Return()
 }
 
-void ComandosEspecificos()
+void ComandosEspecificos() :
+{}
 {
-    return Condicao() || Loop() || Operacao() || True;
+    (Condicao() || Loop() || Operacao())?
 }
 
-void Condicao()
+void Condicao() :
+{}
 {
-    return token(<IF>) && token(<APARENTESES>) && Operacao() &&
-    token(<FPARENTESES>) && token(<ACHAVES>) && Comandos() && 
-    token(<FCHAVES>) && Contradicao();
+    <IF> <APARENTESES> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> Contradicao()
 }
 
-void Contradicao()
+void Contradicao() :
+{}
 {
-    return token(<ELSE>) && token(<ACHAVES>) && Comandos() &&
-    token(<FCHAVES>) || True;
+    (<ELSE> <ACHAVES> Comandos() <FCHAVES>)?
 }
 
-void Return()
+void Return() :
+{}
 {
-    return token(<RETURN>) && Operacao() && token(<PONTOVIRGULA>) || True;
+    (<RETURN> Operacao() <PONTOVIRGULA>)?
 }
 
-void Expressao()
+void Expressao() :
+{}
 {
-    return token(<NUM>) || token(<ID>);
+    <NUM> || <ID>
 }
 
-void Operacao()
+void Operacao() :
+{}
 {
-    return Soma() || Subtracao() || Multiplicacao() || Divisao() ||
+    Soma() || Subtracao() || Multiplicacao() || Divisao() ||
     Igual() || Atribuir() || Maiorque() || Menorque() || Maiorigualque() ||
     Menorigualque() || Negacao() || And() || Or() || Not() || Expressao() ||
-    Variavel();
+    Variavel()
 }
 
-void Soma()
+void Soma() :
+{}
 {
-    return Operacao() && token(<SOMA>) && Operacao();
+    Operacao() <SOMA> Operacao()
 }
 
-void Subtracao()
+void Subtracao() :
+{}
 {
-    return Operacao() && token(<SUBTRACAO>) && Operacao();
+    Operacao() <SUBTRACAO> Operacao()
 }
 
-void Multiplicacao()
+void Multiplicacao() :
+{}
 {
-    return Operacao() && token(<MULTIPLICACAO>) && Operacao();
+    Operacao() <MULTIPLICACAO> Operacao()
 }
 
-void Divisao()
+void Divisao() :
+{}
 {
-    return Operacao() && token(<DIVISAO>) && Operacao();
+    Operacao() <DIVISAO> Operacao()
 }
 
-void Igual()
+void Igual() :
+{}
 {
-    return Operacao() && token(<IGUALDADE>) && Operacao();
+    Operacao() <IGUALDADE> Operacao()
 }
 
-void Atribuir()
+void Atribuir() :
+{}
 {
-    return Expressao() && token(<ATRIBUICAO>) && Operacao();
+    Expressao() <ATRIBUICAO> Operacao()
 }
 
-void Maiorque()
+void Maiorque() :
+{}
 {
-    return Operacao() && token(<MAIOR>) && Operacao();
+    Operacao() <MAIOR> Operacao()
 }
 
-void Menorque()
+void Menorque() :
+{}
 {
-    return Operacao() && token(<MENOR>) && Operacao();
+    Operacao() <MENOR> Operacao()
 }
 
-void Maiorigualque()
+void Maiorigualque() :
+{}
 {
-    return Operacao() && token(<MAIORIGUAL>) && Operacao();
+    Operacao() <MAIORIGUAL> Operacao()
 }
 
-void Menorigualque()
+void Menorigualque() :
+{}
 {
-    return Operacao() && token(<MENORIGUAL>) && Operacao();
+    Operacao() <MENORIGUAL> Operacao()
 }
 
-void Negacao()
+void Negacao() :
+{}
 {
-    return Operacao() && token(<NEGACAO>) && Operacao();
+    Operacao() <NEGACAO> Operacao()
 }
 
-void And()
+void And() :
+{}
 {
-    return Operacao() && token(<AND>) && Operacao();
+    Operacao() <AND> Operacao()
 }
 
-void Or()
+void Or() :
+{}
 {
-    return Operacao() && token(<OR>) && Operacao();
+    Operacao() <OR> Operacao()
 }
 
-void Not()
+void Not() :
+{}
 {
-    return Operacao() && token(<NOT>) && Operacao();
+    Operacao() <NOT> Operacao()
 }
 
-void Variaveis()
+void Variaveis() :
+{}
 {
-    return token(<VIRGULA>) && token(<ID>) || True;
+    (<VIRGULA> <ID>)?
 }
 
-void Variavel()
+void Variavel() :
+{}
 {
-    return TipoVariavel() && token(<ID>) && Variaveis() && Fimdelinha();
+    TipoVariavel() <ID> Variaveis() Fimdelinha()
 }
 
-void TipoVariavel()
+void TipoVariavel() :
+{}
 {
-    return token(<INT>) && token(<CHAR>) && token(<VOID>);
+    <INT> || <CHAR> || <VOID>
 
 }
 
-void Loop()
+void Loop() :
+{}
 {
-    return token(<WHILE>) && token(<APARENTESES>) && Operacao() && token(<FPARENTESES>) &&
-    token(<ACHAVES>) && Comandos() && token(<FCHAVES>) || token(<FOR>) && token(<APARENTESES>) &&
-    Operacao() && token(<PONTOVIRGULA>) && Operacao() && token(<PONTOVIRGULA>) && Operacao() &&
-    token(<FPARENTESES>) && token(<ACHAVES>) && Comandos() && token(<FCHAVES>);
+    <WHILE> <APARENTESES> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> || <FOR> <APARENTESES>
+    Operacao() <PONTOVIRGULA> Operacao() <PONTOVIRGULA> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES>
 }
 
-void Fimdelinha()
+void Fimdelinha() :
+{}
 {
-    return token(<PONTOVIRGULA>) || True;
+    (<PONTOVIRGULA>)?
 }
