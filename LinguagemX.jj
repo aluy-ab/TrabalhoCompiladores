@@ -165,7 +165,99 @@ void Operacao()
 
 void Soma()
 {
-    return Expressao() && token(<SOMA>) && Expressao();
+    return Operacao() && token(<SOMA>) && Operacao();
 }
 
+void Subtracao()
+{
+    return Operacao() && token(<SUBTRACAO>) && Operacao();
+}
 
+void Multiplicacao()
+{
+    return Operacao() && token(<MULTIPLICACAO>) && Operacao();
+}
+
+void Divisao()
+{
+    return Operacao() && token(<DIVISAO>) && Operacao();
+}
+
+void Igual()
+{
+    return Operacao() && token(<IGUALDADE>) && Operacao();
+}
+
+void Atribuir()
+{
+    return Expressao() && token(<ATRIBUICAO>) && Operacao();
+}
+
+void Maiorque()
+{
+    return Operacao() && token(<MAIOR>) && Operacao();
+}
+
+void Menorque()
+{
+    return Operacao() && token(<MENOR>) && Operacao();
+}
+
+void Maiorigualque()
+{
+    return Operacao() && token(<MAIORIGUAL>) && Operacao();
+}
+
+void Menorigualque()
+{
+    return Operacao() && token(<MENORIGUAL>) && Operacao();
+}
+
+void Negacao()
+{
+    return Operacao() && token(<NEGACAO>) && Operacao();
+}
+
+void And()
+{
+    return Operacao() && token(<AND>) && Operacao();
+}
+
+void Or()
+{
+    return Operacao() && token(<OR>) && Operacao();
+}
+
+void Not()
+{
+    return Operacao() && token(<NOT>) && Operacao();
+}
+
+void Variaveis()
+{
+    return token(<VIRGULA>) && token(<ID>) || True;
+}
+
+void Variavel()
+{
+    return TipoVariavel() && token(<ID>) && Variaveis() && Fimdelinha();
+}
+
+void TipoVariavel()
+{
+    return token(<INT>) && token(<CHAR>) && token(<VOID>);
+
+}
+
+void Loop()
+{
+    return token(<WHILE>) && token(<APARENTESES>) && Operacao() && token(<FPARENTESES>) &&
+    token(<ACHAVES>) && Comandos() && token(<FCHAVES>) || token(<FOR>) && token(<APARENTESES>) &&
+    Operacao() && token(<PONTOVIRGULA>) && Operacao() && token(<PONTOVIRGULA>) && Operacao() &&
+    token(<FPARENTESES>) && token(<ACHAVES>) && Comandos() && token(<FCHAVES>);
+}
+
+void Fimdelinha()
+{
+    return token(<PONTOVIRGULA>) || True;
+}
