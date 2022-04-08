@@ -1,6 +1,6 @@
 Regras Sintáticas (rascunho)
 
-X -> Function APARENTESES FPARENTESES ACHAVES Comandos FCHAVES
+X -> Function APARENTESES Variável FPARENTESES ACHAVES Comandos FCHAVES
 Comandos -> Variável ComandosEspecificos Return
 ComandosEspecificos -> Condicao | Loop | Operacao | True
 Condicao -> IF APARENTESES Operacao FPARENTESES ACHAVES Comandos FCHAVES Contradicao
@@ -22,8 +22,9 @@ Negacao -> Expressao NEGACAO Expressao
 And -> Operacao AND Operacao
 Or -> Operacao OR Operacao
 Not -> Operacao NOT Operacao
-Variáveis -> VIRGULA ID PONTOVIRGULA | True
-Variável -> TipoVariável ID Variáveis
+Variáveis -> VIRGULA ID | True
+Variável -> TipoVariável ID Variáveis Fimdelinha
 TipoVariável -> INT | CHAR | VOID
 Loop -> WHILE APARENTESES Operacao FPARENTESES ACHAVES Comandos FCHAVES | FOR APARENTESES Operacao PONTOVIRGULA Operacao PONTOVIRGULA Operacao FPARENTESES ACHAVES Comandos FCHAVES
 Function -> Variável
+Fimdelinha -> PONTOVIRGULA | True
