@@ -1,6 +1,19 @@
 Regras Sintáticas (rascunho)
 
-X -> "main" "{" Comandos Return "}"
-Comandos -> Condicao | Loop |
-Condicao -> "if" "(" Operacao ")" "{" Comandos "}" Contradicao
-Contradicao -> "else" "(" Operacao ")" "{" Comandos "}" | True 
+X -> Function APARENTESES FPARENTESES ACHAVES Comandos FCHAVES
+Comandos -> ComandosEspecificos Return PONTOVIRGULA
+ComandosEspecificos -> Condicao | Loop | Imprimir | Operacao
+Condicao -> IF APARENTESES Operacao FPARENTESES ACHAVES ComandosEspecificos FCHAVES Contradicao
+Contradicao -> ELSE APARENTESES Operacao FPARENTESES ACHAVES ComandosEspecificos FCHAVES | True 
+Return -> RETURN Operacao PONTOVIRGULA | True
+Expressao -> NUM | ID 
+Operacao -> Soma | Subtracao | Multiplicacao | Divisao | Expressao
+Soma -> Expressao SOMA Expressao
+Subtracao -> Expressao SUBTRACAO Expressao
+Multiplicacao -> Expressao MULTIPLICACAO Expressao
+Divisao -> Expressao DIVISAO Expressao
+Variável -> TipoVariável ID 
+TipoVariável -> INT | CHAR | VOID
+Loop -> WHILE APARENTESES Operacao FPARENTESES | FOR APARENTESES Operacao FPARENTESES
+Imprimir -> PRINT APARENTESES Operacao FPARENTESES PONTOVIRGULA
+Function -> TipoVariavel ID
