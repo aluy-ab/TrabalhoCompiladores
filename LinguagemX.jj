@@ -45,9 +45,9 @@ TOKEN : //símbolos
 
 TOKEN : //palavras reservadas
 {
-    <MAIN: "main">
-|    <INT: "int">
+    <INT: "int">
 |    <CHAR: "char">
+|    <VOID: "void">
 |    <IF: "if">
 |    <ELSE: "else">
 |    <WHILE: "while">
@@ -82,7 +82,7 @@ TOKEN :
 void X() :
 {Token t;}
 {
-    <MAIN><ACHAVES>Comandos()<FCHAVES>
+    Function()<APARENTESES>Variavel()<FPARENTESES><ACHAVES>Comandos()<FCHAVES>
     (
         <APARENTESES> { System.out.println("Abre parenteses: (");}
     |    <FPARENTESES> { System.out.println("Fecha parenteses: )");}
@@ -93,7 +93,6 @@ void X() :
     |    <PONTOVIRGULA> { System.out.println("Ponto e virgula: ;");}
     |    <VIRGULA> { System.out.println("Ponto e virgula: ,");}
 
-    |    <MAIN> { System.out.println("Palavra reservada: main");}
     |    <INT> { System.out.println("Palavra reservada: int");}
     |    <CHAR> { System.out.println("Palavra reservada: char");}
     |    <IF> { System.out.println("Palavra reservada: if");}
@@ -125,5 +124,48 @@ void X() :
 
 void Comandos()
 {
-
+    return Variavel() && ComandosEspecificos() && Return();
 }
+
+void ComandosEspecificos()
+{
+    return Condicao() || Loop() || Operacao() || True;
+}
+
+void Condicao()
+{
+    return token(<IF>) && token(<APARENTESES>) && Operacao() &&
+    token(<FPARENTESES>) && token(<ACHAVES>) && Comandos() && 
+    token(<FCHAVES>) && Contradicao();
+}
+
+void Contradicao()
+{
+    return token(<ELSE>) && token(<ACHAVES>) && Comandos() &&
+    token(<FCHAVES>) || True;
+}
+
+void Return()
+{
+    return token(<RETURN>) && Operacao() && token(<PONTOVIRGULA>) || True;
+}
+
+void Expressao()
+{
+    return token(<NUM>) || token(<ID>);
+}
+
+void Operacao()
+{
+    return Soma() || Subtracao() || Multiplicacao() || Divisao() ||
+    Igual() || Atribuir() || Maiorque() || Menorque() || Maiorigualque() ||
+    Menorigualque() || Negacao() || And() || Or() || Not() || Expressao() ||
+    Variavel();
+}
+
+void Soma()
+{
+    return Expressao() && token(<SOMA>) && Expressao();
+}
+
+
