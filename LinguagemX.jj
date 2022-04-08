@@ -31,13 +31,49 @@ SKIP :
 |   "\r"
 }
 
-TOKEN :
+TOKEN : //símbolos
 {
-    <MAIN: "main">
+    <APARENTESES: "(">
+|    <FPARENTESES: ")">
+|    <ACOLCHETES: "[">
+|    <FCOLCHETES: "]">
 |    <ACHAVES: "{">
 |    <FCHAVES: "}">
 |    <PONTOVIRGULA: ";">
-|    <ATRIBUICAO: ":=">
+|    <VIRGULA: ",">
+|    <ATRIBUICAO_REG_SINT: ":=">
+}
+
+TOKEN : //palavras reservadas
+{
+    <MAIN: "main">
+|    <INT: "int">
+|    <CHAR: "char">
+|    <FLOAT: "float">
+|    <DOUBLE: "double">
+|    <IF: "if">
+|    <ELSE: "else">
+|    <WHILE: "while">
+|    <FOR: "for">
+|    <RETURN: "return">
+}
+
+TOKEN : //operadores
+{
+    <SOMA: "+">
+|    <SUBTRACAO: "-">
+|    <MULTIPLICACAO: "*">
+|    <DIVISAO: "/">
+|    <ATRIBUICAO_REG_LEX: "=">
+|    <IGUALDADE: "==">
+|    <MAIOR: ">">
+|    <MENOR: "<">
+|    <MAIORIGUAL: ">=">
+|    <MENORIGUAL: "<=">
+|    <NEGACAO: "!=">
+|    <AND: "&&">
+|    <OR: "||">
+|    <NOT: "!">
 }
 
 TOKEN :
@@ -49,6 +85,7 @@ TOKEN :
 void X() :
 {Token t;}
 {
+    <MAIN><ACHAVES>Comandos()<FCHAVES>
     (
         <MAIN> { System.out.println("Palavra reservada: main");}
     |    <ACHAVES> { System.out.println("Abre chaves: {");}
@@ -58,4 +95,9 @@ void X() :
     |    t = <ID> { System.out.println("Identificador: " + t.image);}
     )*
     <EOF>
+}
+
+void Comandos()
+{
+
 }
