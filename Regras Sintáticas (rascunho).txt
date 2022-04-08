@@ -7,24 +7,11 @@ Condicao -> IF APARENTESES Operacao FPARENTESES ACHAVES Comandos FCHAVES Contrad
 Contradicao -> ELSE ACHAVES Comandos FCHAVES | True 
 Return -> RETURN Operacao PONTOVIRGULA | True
 Expressao -> NUM | ID 
-Operacao -> Soma | Subtracao | Multiplicacao | Divisao | Igual | Atribuir | Maiorque | Menorque | Maiorigualque | Menorigualque | Negacao | And | Or | Not | Expressao | Variável
-Soma -> Expressao SOMA Expressao
-Subtracao -> Expressao SUBTRACAO Expressao
-Multiplicacao -> Expressao MULTIPLICACAO Expressao
-Divisao -> Expressao DIVISAO Expressao
-Igual -> Expressao IGUALDADE Expressao
-Atribuir -> Expressao ATRIBUICAO Expressao
-Maiorque -> Expressao MAIOR Expressao
-Menorque -> Expressao MENOR Expressao
-Maiorigualque -> Expressao MAIORIGUAL Expressao
-Menorigualque -> Expressao MENORIGUAL Expressao
-Negacao -> Expressao NEGACAO Expressao
-And -> Operacao AND Operacao
-Or -> Operacao OR Operacao
-Not -> Operacao NOT Operacao
+Operacao -> Expressao SinalOp Expressao | Variavel | Not
+SinalOp -> SOMA | SUBTRACAO | MULTIPLICACAO | DIVISAO | IGUALDADE | ATRIBUICAO | MAIOR | MENOR | MAIORIGUAL | MENORIGUAL | NEGACAO | AND | OR  
 Variáveis -> VIRGULA ID | True
 Variável -> TipoVariável ID Variáveis Fimdelinha
 TipoVariável -> INT | CHAR | VOID
 Loop -> WHILE APARENTESES Operacao FPARENTESES ACHAVES Comandos FCHAVES | FOR APARENTESES Operacao PONTOVIRGULA Operacao PONTOVIRGULA Operacao FPARENTESES ACHAVES Comandos FCHAVES
-Function -> Variável
 Fimdelinha -> PONTOVIRGULA | True
+Not -> NOT Expressao
