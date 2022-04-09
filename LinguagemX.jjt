@@ -1,0 +1,227 @@
+PARSER_BEGIN(X)
+
+import java.io.*;
+import java.util.*;
+
+public class X {
+
+    public static void main(String args[]) throws ParseException, IOException {
+
+        Scanner scan = new Scanner(System.in);
+        String nomeArq;
+
+        System.out.println("Digite o nome do arquivo: ");
+
+        nomeArq = System.getProperty("user.dir") + "\\" + scan.nextLine();
+
+        X lex = new X(new FileInputStream(nomeArq));
+        lex.X();
+
+        try {
+            System.out.println("\nÁrvore Sintática: ");
+            ASTStart n = lex.Start();
+            n.dump("");
+            System.out.println("Thank you.");
+          } catch (Exception e) {
+            System.out.println("Oops.");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+          }
+
+    }
+
+}
+
+PARSER_END(X)
+
+SKIP :
+{
+    " "
+|   "\t"
+|   "\n"
+|   "\r"
+}
+
+TOKEN : //símbolos
+{
+    <APARENTESES: "(">
+|    <FPARENTESES: ")">
+|    <ACOLCHETES: "[">
+|    <FCOLCHETES: "]">
+|    <ACHAVES: "{">
+|    <FCHAVES: "}">
+|    <PONTOVIRGULA: ";">
+|    <VIRGULA: ",">
+}
+
+TOKEN : //palavras reservadas
+{
+    <INT: "int">
+|    <CHAR: "char">
+|    <VOID: "void">
+|    <IF: "if">
+|    <ELSE: "else">
+|    <WHILE: "while">
+|    <FOR: "for">
+|    <RETURN: "return">
+}
+
+TOKEN : //operadores
+{
+    <SOMA: "+">
+|    <SUBTRACAO: "-">
+|    <MULTIPLICACAO: "*">
+|    <DIVISAO: "/">
+|    <ATRIBUICAO: "=">
+|    <IGUALDADE: "==">
+|    <MAIOR: ">">
+|    <MENOR: "<">
+|    <MAIORIGUAL: ">=">
+|    <MENORIGUAL: "<=">
+|    <DIFERENTE: "!=">
+|    <AND: "&&">
+|    <OR: "||">
+|    <NOT: "!">
+}
+
+TOKEN :
+{
+    <NUM : (["0"-"9"])+(".")*(["0"-"9"])+> 
+|    <ID : ["a"-"z","A"-"Z"](["a"-"z","A"-"Z","0"-"9","_"])*>
+}
+
+ASTStart Start() : {}
+{
+  Expression() ";"
+  { return jjtThis; }
+}
+
+void X() :
+{Token t;}
+{
+    Variavel() <APARENTESES> <FPARENTESES> <ACHAVES> Comandos() <FCHAVES>
+    (
+        <APARENTESES> { System.out.println("Abre parenteses: (");}
+    |    <FPARENTESES> { System.out.println("Fecha parenteses: )");}
+    |    <ACOLCHETES> { System.out.println("Abre colchetes: [");}
+    |    <FCOLCHETES> { System.out.println("Fecha colchetes: ]");}
+    |    <ACHAVES> { System.out.println("Abre chaves: {");}
+    |    <FCHAVES> { System.out.println("Fecha chaves: }");}
+    |    <PONTOVIRGULA> { System.out.println("Ponto e virgula: ;");}
+    |    <VIRGULA> { System.out.println("Ponto e virgula: ,");}
+
+    |    <INT> { System.out.println("Palavra reservada: int");}
+    |    <CHAR> { System.out.println("Palavra reservada: char");}
+    |    <IF> { System.out.println("Palavra reservada: if");}
+    |    <ELSE> { System.out.println("Palavra reservada: else");}
+    |    <WHILE> { System.out.println("Palavra reservada: while");}
+    |    <FOR> { System.out.println("Palavra reservada: for");}
+    |    <RETURN> { System.out.println("Palavra reservada: return");}
+
+    |    <SOMA> { System.out.println("Operador: +");}
+    |    <SUBTRACAO> { System.out.println("Operador: -");}
+    |    <MULTIPLICACAO> { System.out.println("Operador: *");}
+    |    <DIVISAO> { System.out.println("Operador: /");}
+    |    <ATRIBUICAO> { System.out.println("Operador: =");}
+    |    <IGUALDADE> { System.out.println("Operador: ==");}
+    |    <MAIOR> { System.out.println("Operador: >");}
+    |    <MENOR> { System.out.println("Operador: <");}
+    |    <MAIORIGUAL> { System.out.println("Operador: >=");}
+    |    <MENORIGUAL> { System.out.println("Operador: <=");}
+    |    <DIFERENTE> { System.out.println("Operador: !=");}
+    |    <AND> { System.out.println("Operador: &&");}
+    |    <OR> { System.out.println("Operador: ||");}
+    |    <NOT> { System.out.println("Operador: !");}
+
+    |    t = <NUM> { System.out.println("Número: " + t.image);}
+    |    t = <ID> { System.out.println("Identificador: " + t.image);}
+    )*
+    <EOF>
+}
+
+void Comandos() :
+{}
+{
+    (Variavel())* (ComandosEspecificos())* Return()
+}
+
+void ComandosEspecificos() :
+{}
+{
+    Condicao() | Loop() | Operacao()
+}
+
+void Condicao() :
+{}
+{
+    <IF> <APARENTESES> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> Contradicao()
+}
+
+void Contradicao() :
+{}
+{
+    (<ELSE> <ACHAVES> Comandos() <FCHAVES>)?
+}
+
+void Return() :
+{}
+{
+    (<RETURN> Variavel() <PONTOVIRGULA>)?
+}
+
+void Operacao() :
+{}
+{
+    Operando() SinalOp() Operando() (SinalOp() Operando())? Fimdelinha() | Not()
+}
+
+void Operando() :
+{}
+{
+    <ID> | <NUM>
+}
+
+void SinalOp() :
+{}
+{
+    <SOMA> | <SUBTRACAO> | <MULTIPLICACAO> | <DIVISAO> | <IGUALDADE> | <ATRIBUICAO> | <MAIOR> |
+    <MENOR> | <MAIORIGUAL> | <MENORIGUAL> | <DIFERENTE> | <AND> | <OR> 
+}
+
+void Not() :
+{}
+{
+    <NOT> Variavel() Fimdelinha()
+}
+
+void Variaveis() :
+{}
+{
+    <VIRGULA> <ID>
+}
+
+void Variavel() :
+{}
+{
+    TipoVariavel() <ID> (Variaveis())? Fimdelinha()
+}
+
+void TipoVariavel() :
+{}
+{
+    <INT> | <CHAR> | <VOID>
+
+}
+
+void Loop() :
+{}
+{
+    <WHILE> <APARENTESES> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> | <FOR> <APARENTESES>
+    Operacao() <PONTOVIRGULA> Operacao() <PONTOVIRGULA> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES>
+}
+
+void Fimdelinha() :
+{}
+{
+    (<PONTOVIRGULA>)?
+}
