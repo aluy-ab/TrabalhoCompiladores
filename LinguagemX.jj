@@ -82,7 +82,7 @@ TOKEN :
 void X() :
 {Token t;}
 {
-    Variavel() <APARENTESES> Variavel() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES>
+    Variavel() <APARENTESES> <FPARENTESES> <ACHAVES> Comandos() <FCHAVES>
     (
         <APARENTESES> { System.out.println("Abre parenteses: (");}
     |    <FPARENTESES> { System.out.println("Fecha parenteses: )");}
@@ -125,13 +125,13 @@ void X() :
 void Comandos() :
 {}
 {
-    Variavel() ComandosEspecificos() Return()
+    (Variavel())* (ComandosEspecificos())* Return()
 }
 
 void ComandosEspecificos() :
 {}
 {
-    (Condicao() | Loop() | Operacao())?
+    Condicao() | Loop() | Operacao()
 }
 
 void Condicao() :
@@ -149,19 +149,19 @@ void Contradicao() :
 void Return() :
 {}
 {
-    (<RETURN> Operacao() <PONTOVIRGULA>)?
-}
-
-void Expressao() :
-{}
-{
-    <NUM> | <ID>
+    (<RETURN> Variavel() <PONTOVIRGULA>)?
 }
 
 void Operacao() :
 {}
 {
-    Expressao() SinalOp() Expressao() | Variavel() | Not()
+    Operando() SinalOp() Operando() (SinalOp() Operando())? Fimdelinha() | Not()
+}
+
+void Operando() :
+{}
+{
+    <ID> | <NUM>
 }
 
 void SinalOp() :
@@ -174,19 +174,19 @@ void SinalOp() :
 void Not() :
 {}
 {
-    <NOT> Expressao()
+    <NOT> Variavel() Fimdelinha()
 }
 
 void Variaveis() :
 {}
 {
-    (<VIRGULA> <ID>)?
+    <VIRGULA> <ID>
 }
 
 void Variavel() :
 {}
 {
-    TipoVariavel() <ID> Variaveis() Fimdelinha()
+    TipoVariavel() <ID> (Variaveis())? Fimdelinha()
 }
 
 void TipoVariavel() :
