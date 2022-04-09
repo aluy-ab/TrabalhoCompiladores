@@ -14,19 +14,9 @@ public class X {
 
         nomeArq = System.getProperty("user.dir") + "\\" + scan.nextLine();
 
-        X lex = new X(new FileInputStream(nomeArq));
-        lex.X();
-
-        try {
-            System.out.println("\nÁrvore Sintática: ");
-            ASTStart n = lex.Start();
-            n.dump("");
-            System.out.println("Thank you.");
-          } catch (Exception e) {
-            System.out.println("Oops.");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-          }
+        X lex = new X(new java.io.FileInputStream(nomeArq));
+        SimpleNode root = lex.Start();
+        root.dump("");
 
     }
 
@@ -90,16 +80,16 @@ TOKEN :
 |    <ID : ["a"-"z","A"-"Z"](["a"-"z","A"-"Z","0"-"9","_"])*>
 }
 
-ASTStart Start() : {}
+SimpleNode Start() : {}
 {
-  Expression() ";"
+  Variavel() <APARENTESES> <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> <EOF>
   { return jjtThis; }
 }
 
 void X() :
 {Token t;}
 {
-    Variavel() <APARENTESES> <FPARENTESES> <ACHAVES> Comandos() <FCHAVES>
+    
     (
         <APARENTESES> { System.out.println("Abre parenteses: (");}
     |    <FPARENTESES> { System.out.println("Fecha parenteses: )");}
@@ -139,88 +129,88 @@ void X() :
     <EOF>
 }
 
-void Comandos() :
+void Comandos() #COM :
 {}
 {
     (Variavel())* (ComandosEspecificos())* Return()
 }
 
-void ComandosEspecificos() :
+void ComandosEspecificos()  #COMES :
 {}
 {
     Condicao() | Loop() | Operacao()
 }
 
-void Condicao() :
+void Condicao() #IF :
 {}
 {
     <IF> <APARENTESES> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> Contradicao()
 }
 
-void Contradicao() :
+void Contradicao() #ELSE :
 {}
 {
     (<ELSE> <ACHAVES> Comandos() <FCHAVES>)?
 }
 
-void Return() :
+void Return() #RET :
 {}
 {
     (<RETURN> Variavel() <PONTOVIRGULA>)?
 }
 
-void Operacao() :
+void Operacao() #OP :
 {}
 {
     Operando() SinalOp() Operando() (SinalOp() Operando())? Fimdelinha() | Not()
 }
 
-void Operando() :
+void Operando() #OPVAR :
 {}
 {
     <ID> | <NUM>
 }
 
-void SinalOp() :
+void SinalOp() #SOP :
 {}
 {
     <SOMA> | <SUBTRACAO> | <MULTIPLICACAO> | <DIVISAO> | <IGUALDADE> | <ATRIBUICAO> | <MAIOR> |
     <MENOR> | <MAIORIGUAL> | <MENORIGUAL> | <DIFERENTE> | <AND> | <OR> 
 }
 
-void Not() :
+void Not() #NOT :
 {}
 {
     <NOT> Variavel() Fimdelinha()
 }
 
-void Variaveis() :
+void Variaveis() #VARPLUS :
 {}
 {
     <VIRGULA> <ID>
 }
 
-void Variavel() :
+void Variavel() #VAR :
 {}
 {
     TipoVariavel() <ID> (Variaveis())? Fimdelinha()
 }
 
-void TipoVariavel() :
+void TipoVariavel() #VARTYPE :
 {}
 {
     <INT> | <CHAR> | <VOID>
 
 }
 
-void Loop() :
+void Loop() #LOOP :
 {}
 {
     <WHILE> <APARENTESES> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> | <FOR> <APARENTESES>
     Operacao() <PONTOVIRGULA> Operacao() <PONTOVIRGULA> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES>
 }
 
-void Fimdelinha() :
+void Fimdelinha() #PV :
 {}
 {
     (<PONTOVIRGULA>)?
