@@ -7,6 +7,9 @@ public class X {
 
     public static void main(String args[]) throws ParseException, IOException {
 
+        String temp;
+        STC temp2;
+
         Scanner scan = new Scanner(System.in);
         String nomeArq;
 
@@ -16,7 +19,40 @@ public class X {
 
         X lex = new X(new java.io.FileInputStream(nomeArq));
         SimpleNode root = lex.Start();
+    
+        System.out.println("Abstract Syntax Tree:");
+
         root.dump("");
+
+        System.out.println();
+    System.out.println("Symbol Table:");
+
+    Enumeration t = ST.keys();
+
+    while (t.hasMoreElements())
+    {
+      temp = (String)t.nextElement();
+      temp2 = (STC)ST.get(temp);
+      System.out.println(temp);
+      if (temp2.type != null)
+      {
+        System.out.println(" type = " + temp2.type);
+      }
+      if (temp2.value != null)
+      {
+        System.out.println(" value = " + temp2.value);
+      }
+    }
+
+    System.out.println();
+    System.out.println("Program:");
+    PrintVisitor pv = new PrintVisitor();
+    root.jjtAccept(pv, null);
+
+    System.out.println();
+    System.out.println("Type Checking:");
+    TypeCheckVisitor tc = new TypeCheckVisitor();
+    root.jjtAccept(tc, ST);    
 
     }
 
@@ -132,7 +168,7 @@ void X() :
 void Comandos() #COM :
 {}
 {
-    (Variavel())* (ComandosEspecificos())* Return()
+    (Variavel())* (ComandosEspecificos())+ (Return())?
 }
 
 void ComandosEspecificos()  #COMES :
@@ -144,19 +180,19 @@ void ComandosEspecificos()  #COMES :
 void Condicao() #IF :
 {Token t;}
 {
-    <IF> <APARENTESES> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> Contradicao()
+    <IF> <APARENTESES> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> (Contradicao())?
 }
 
 void Contradicao() #ELSE :
 {Token t;}
 {
-    (<ELSE> <ACHAVES> Comandos() <FCHAVES>)?
+    <ELSE> (<IF> Operacao())? <ACHAVES> Comandos() <FCHAVES>
 }
 
 void Return() #RET :
 {Token t;}
 {
-    (<RETURN> Variavel() <PONTOVIRGULA>)?
+    <RETURN> Variavel() <PONTOVIRGULA>
 }
 
 void Operacao() #OP :
@@ -168,8 +204,8 @@ void Operacao() #OP :
 void Operando() #OPVAR :
 {Token t;}
 {
-    t = <NUM> { System.out.println("Número: " + t.image);}
-    |    t = <ID> { System.out.println("Identificador: " + t.image);}
+    t = <NUM> {jjtThis.value = t.image;} #Aop(2)
+    |    t = <ID> {jjtThis.value = t.image;} #Bop(2)
 }
 
 void SinalOp() #SOP :
@@ -214,5 +250,6 @@ void Loop() #LOOP :
 void Fimdelinha() #PV :
 {Token t;}
 {
-    (<PONTOVIRGULA>)?
+    LOOKAHEAD(2)
+    (<PONTOVIRGULA>)? 
 }

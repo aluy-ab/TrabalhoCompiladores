@@ -11,6 +11,9 @@ public class X/*@bgen(jjtree)*/implements XTreeConstants/*@egen*/ {/*@bgen(jjtre
 
     public static void main(String args[]) throws ParseException, IOException {
 
+        String temp;
+        STC temp2;
+
         Scanner scan = new Scanner(System.in);
         String nomeArq;
 
@@ -20,7 +23,40 @@ public class X/*@bgen(jjtree)*/implements XTreeConstants/*@egen*/ {/*@bgen(jjtre
 
         X lex = new X(new java.io.FileInputStream(nomeArq));
         SimpleNode root = lex.Start();
+    
+        System.out.println("Abstract Syntax Tree:");
+
         root.dump("");
+
+        System.out.println();
+    System.out.println("Symbol Table:");
+
+    Enumeration t = ST.keys();
+
+    while (t.hasMoreElements())
+    {
+      temp = (String)t.nextElement();
+      temp2 = (STC)ST.get(temp);
+      System.out.println(temp);
+      if (temp2.type != null)
+      {
+        System.out.println(" type = " + temp2.type);
+      }
+      if (temp2.value != null)
+      {
+        System.out.println(" value = " + temp2.value);
+      }
+    }
+
+    System.out.println();
+    System.out.println("Program:");
+    PrintVisitor pv = new PrintVisitor();
+    root.jjtAccept(pv, null);
+
+    System.out.println();
+    System.out.println("Type Checking:");
+    TypeCheckVisitor tc = new TypeCheckVisitor();
+    root.jjtAccept(tc, ST);    
 
     }
 
@@ -92,7 +128,7 @@ SimpleNode Start() : {/*@bgen(jjtree) Start */
 {/*@bgen(jjtree) Start */
   try {
 /*@egen*/
-  Variavel() <APARENTESES> <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> <EOF>/*@bgen(jjtree)*/
+  X()/*@bgen(jjtree)*/
   {
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
@@ -130,7 +166,7 @@ void X() :
 {/*@bgen(jjtree) X */
     try {
 /*@egen*/
-    
+    Variavel() <APARENTESES> <FPARENTESES> <ACHAVES> Comandos() <FCHAVES>
     (
         <APARENTESES> { System.out.println("Abre parenteses: (");}
     |    <FPARENTESES> { System.out.println("Fecha parenteses: )");}
@@ -168,6 +204,20 @@ void X() :
     |    t = <ID> { System.out.println("Identificador: " + t.image);}
     )*
     <EOF>/*@bgen(jjtree)*/
+    } catch (Throwable jjte000) {
+      if (jjtc000) {
+        jjtree.clearNodeScope(jjtn000);
+        jjtc000 = false;
+      } else {
+        jjtree.popNode();
+      }
+      if (jjte000 instanceof RuntimeException) {
+        throw (RuntimeException)jjte000;
+      }
+      if (jjte000 instanceof ParseException) {
+        throw (ParseException)jjte000;
+      }
+      throw (Error)jjte000;
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -185,7 +235,7 @@ void Comandos()      :
 {/*@bgen(jjtree) COM */
     try {
 /*@egen*/
-    (Variavel())* (ComandosEspecificos())* Return()/*@bgen(jjtree)*/
+    (Variavel())* (ComandosEspecificos())+ (Return())?/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);
@@ -242,14 +292,14 @@ void ComandosEspecificos()         :
 
 void Condicao()     :
 {/*@bgen(jjtree) IF */
-  SimpleNode jjtn000 = new SimpleNode(JJTIF);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
+ SimpleNode jjtn000 = new SimpleNode(JJTIF);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+/*@egen*/Token t;}
 {/*@bgen(jjtree) IF */
     try {
 /*@egen*/
-    <IF> <APARENTESES> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> Contradicao()/*@bgen(jjtree)*/
+    <IF> <APARENTESES> Operacao() <FPARENTESES> <ACHAVES> Comandos() <FCHAVES> (Contradicao())?/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);
@@ -274,14 +324,14 @@ void Condicao()     :
 
 void Contradicao()       :
 {/*@bgen(jjtree) ELSE */
-  SimpleNode jjtn000 = new SimpleNode(JJTELSE);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
+ SimpleNode jjtn000 = new SimpleNode(JJTELSE);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+/*@egen*/Token t;}
 {/*@bgen(jjtree) ELSE */
     try {
 /*@egen*/
-    (<ELSE> <ACHAVES> Comandos() <FCHAVES>)?/*@bgen(jjtree)*/
+    <ELSE> (<IF> Operacao())? <ACHAVES> Comandos() <FCHAVES>/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);
@@ -306,14 +356,14 @@ void Contradicao()       :
 
 void Return()      :
 {/*@bgen(jjtree) RET */
-  SimpleNode jjtn000 = new SimpleNode(JJTRET);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
+ SimpleNode jjtn000 = new SimpleNode(JJTRET);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+/*@egen*/Token t;}
 {/*@bgen(jjtree) RET */
     try {
 /*@egen*/
-    (<RETURN> Variavel() <PONTOVIRGULA>)?/*@bgen(jjtree)*/
+    <RETURN> Variavel() <PONTOVIRGULA>/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);
@@ -370,14 +420,51 @@ void Operacao()     :
 
 void Operando()        :
 {/*@bgen(jjtree) OPVAR */
-  SimpleNode jjtn000 = new SimpleNode(JJTOPVAR);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
+ SimpleNode jjtn000 = new SimpleNode(JJTOPVAR);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+/*@egen*/Token t;}
 {/*@bgen(jjtree) OPVAR */
     try {
 /*@egen*/
-    <ID> | <NUM>/*@bgen(jjtree)*/
+    t = <NUM>/*@bgen(jjtree) #Aop( 2) */
+              {
+                SimpleNode jjtn001 = new SimpleNode(JJTAOP);
+                boolean jjtc001 = true;
+                jjtree.openNodeScope(jjtn001);
+              }
+              try {
+/*@egen*//*@bgen(jjtree)*/
+              {
+                jjtree.closeNodeScope(jjtn001,  2);
+                jjtc001 = false;
+              }
+/*@egen*/ {jjtn001.value = t.image;}/*@bgen(jjtree)*/
+              } finally {
+                if (jjtc001) {
+                  jjtree.closeNodeScope(jjtn001,  2);
+                }
+              }
+/*@egen*/        
+    |    t = <ID>/*@bgen(jjtree) #Bop( 2) */
+                  {
+                    SimpleNode jjtn002 = new SimpleNode(JJTBOP);
+                    boolean jjtc002 = true;
+                    jjtree.openNodeScope(jjtn002);
+                  }
+                  try {
+/*@egen*//*@bgen(jjtree)*/
+                  {
+                    jjtree.closeNodeScope(jjtn002,  2);
+                    jjtc002 = false;
+                  }
+/*@egen*/ {jjtn002.value = t.image;}/*@bgen(jjtree)*/
+                  } finally {
+                    if (jjtc002) {
+                      jjtree.closeNodeScope(jjtn002,  2);
+                    }
+                  }
+/*@egen*/        /*@bgen(jjtree)*/
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -388,10 +475,10 @@ void Operando()        :
 
 void SinalOp()      :
 {/*@bgen(jjtree) SOP */
-  SimpleNode jjtn000 = new SimpleNode(JJTSOP);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
+ SimpleNode jjtn000 = new SimpleNode(JJTSOP);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+/*@egen*/Token t;}
 {/*@bgen(jjtree) SOP */
     try {
 /*@egen*/
@@ -407,10 +494,10 @@ void SinalOp()      :
 
 void Not()      :
 {/*@bgen(jjtree) NOT */
-  SimpleNode jjtn000 = new SimpleNode(JJTNOT);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
+ SimpleNode jjtn000 = new SimpleNode(JJTNOT);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+/*@egen*/Token t;}
 {/*@bgen(jjtree) NOT */
     try {
 /*@egen*/
@@ -439,10 +526,10 @@ void Not()      :
 
 void Variaveis()          :
 {/*@bgen(jjtree) VARPLUS */
-  SimpleNode jjtn000 = new SimpleNode(JJTVARPLUS);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
+ SimpleNode jjtn000 = new SimpleNode(JJTVARPLUS);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+/*@egen*/Token t;}
 {/*@bgen(jjtree) VARPLUS */
     try {
 /*@egen*/
@@ -457,10 +544,10 @@ void Variaveis()          :
 
 void Variavel()      :
 {/*@bgen(jjtree) VAR */
-  SimpleNode jjtn000 = new SimpleNode(JJTVAR);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
+ SimpleNode jjtn000 = new SimpleNode(JJTVAR);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+/*@egen*/Token t;}
 {/*@bgen(jjtree) VAR */
     try {
 /*@egen*/
@@ -489,10 +576,10 @@ void Variavel()      :
 
 void TipoVariavel()          :
 {/*@bgen(jjtree) VARTYPE */
-  SimpleNode jjtn000 = new SimpleNode(JJTVARTYPE);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
+ SimpleNode jjtn000 = new SimpleNode(JJTVARTYPE);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+/*@egen*/Token t;}
 {/*@bgen(jjtree) VARTYPE */
     try {
 /*@egen*/
@@ -508,10 +595,10 @@ void TipoVariavel()          :
 
 void Loop()       :
 {/*@bgen(jjtree) LOOP */
-  SimpleNode jjtn000 = new SimpleNode(JJTLOOP);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
+ SimpleNode jjtn000 = new SimpleNode(JJTLOOP);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+/*@egen*/Token t;}
 {/*@bgen(jjtree) LOOP */
     try {
 /*@egen*/
@@ -541,18 +628,19 @@ void Loop()       :
 
 void Fimdelinha()     :
 {/*@bgen(jjtree) PV */
-  SimpleNode jjtn000 = new SimpleNode(JJTPV);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
+ SimpleNode jjtn000 = new SimpleNode(JJTPV);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+/*@egen*/Token t;}
 {/*@bgen(jjtree) PV */
     try {
 /*@egen*/
+    LOOKAHEAD(2)
     (<PONTOVIRGULA>)?/*@bgen(jjtree)*/
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
       }
     }
-/*@egen*/
+/*@egen*/ 
 }
