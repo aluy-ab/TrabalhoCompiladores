@@ -1,7 +1,8 @@
 void main(){ 
-    int a, b
-    char c
+    int a, b;
+    char c;
     if(a==b){
-        c = a*b
+        c = a*b;
     }
+    return 0;
 }
